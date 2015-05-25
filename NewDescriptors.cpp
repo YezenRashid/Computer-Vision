@@ -132,6 +132,7 @@ namespace cv
 		CV_Assert(!descriptorExtractor.empty());
 	}
 
+	//used to get opponent color space from normal image
 	static void convertBGRImageToOpponentColorSpace(const Mat& bgrImage, vector<Mat>& opponentChannels)
 	{
 		if (bgrImage.type() != CV_8UC3)
@@ -167,9 +168,10 @@ namespace cv
 		const vector<KeyPoint>* kp;
 	};
 
+	//does everything other than converting an image to an opponent color space for the class.  Option 3 work would all be done here
 	void OpponentColorDescriptorExtractor::computeImpl(const Mat& bgrImage, vector<KeyPoint>& keypoints, Mat& descriptors) const
 	{
-		vector<Mat> opponentChannels;
+		vector<Mat> opponentChannels; //unlikely to be color band vector
 		convertBGRImageToOpponentColorSpace(bgrImage, opponentChannels);
 
 		const int N = 3; // channels count
@@ -177,15 +179,20 @@ namespace cv
 		Mat channelDescriptors[N];
 		vector<int> idxs[N];
 
-		// Compute descriptors three times, once for each Opponent channel to concatenate into a single color descriptor
-		int maxKeypointsCount = 0;
-		for (int ci = 0; ci < N; ci++)
+		for (int ci = 0; ci < N; ci++) // loop for each channel
 		{
 			channelKeypoints[ci].insert(channelKeypoints[ci].begin(), keypoints.begin(), keypoints.end());
+		}
+
+		// Compute descriptors three times, once for each Opponent channel to concatenate into a single color descriptor
+		int maxKeypointsCount = 0;
+		for (int ci = 0; ci < N; ci++) // loop for each channel
+		{
 			// Use class_id member to get indices into initial keypoints vector
-			for (size_t ki = 0; ki < channelKeypoints[ci].size(); ki++)
+			for (size_t ki = 0; ki < channelKeypoints[ci].size(); ki++) // loop through the size of a channel
 				channelKeypoints[ci][ki].class_id = (int)ki;
 
+			// below calls compute(const Mat& image, vector<KeyPoint>& keypoints, Mat& descriptors)
 			descriptorExtractor->compute(opponentChannels[ci], channelKeypoints[ci], channelDescriptors[ci]);
 			idxs[ci].resize(channelKeypoints[ci].size());
 			for (size_t ki = 0; ki < channelKeypoints[ci].size(); ki++)
@@ -197,14 +204,16 @@ namespace cv
 		}
 
 		vector<KeyPoint> outKeypoints;
-		outKeypoints.reserve(keypoints.size());
+		outKeypoints.reserve(keypoints.
+			size());
 
 		int dSize = descriptorExtractor->descriptorSize();
 		Mat mergedDescriptors(maxKeypointsCount, 3 * dSize, descriptorExtractor->descriptorType());
 		int mergedCount = 0;
 		// cp - current channel position
 		size_t cp[] = { 0, 0, 0 };
-		while (cp[0] < channelKeypoints[0].size() &&
+		// checking all the keypoints for every channel
+		while (cp[0] < channelKeypoints[0].size() && // loop until any position in cp has iterated up to the size of its counterpart position in channelKeyPoints
 			cp[1] < channelKeypoints[1].size() &&
 			cp[2] < channelKeypoints[2].size())
 		{
