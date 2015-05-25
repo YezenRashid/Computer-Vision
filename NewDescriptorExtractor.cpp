@@ -105,6 +105,8 @@ Below is the original copyright.
 #include "NewDescriptorExtractor.h"
 #include <iostream>
 #include <stdarg.h>
+#include <iostream>
+using namespace std;
 
 namespace cv
 {
@@ -189,12 +191,9 @@ namespace cv
 
 	static Mat createInitialImage(const Mat& img, bool doubleImageSize, float sigma)
 	{
-		Mat gray, gray_fpt;
-		if (img.channels() == 3 || img.channels() == 4)
-			cvtColor(img, gray, COLOR_BGR2GRAY);
-		else
-			img.copyTo(gray);
-		gray.convertTo(gray_fpt, DataType<NEWSIFT_wt>::type, NEWSIFT_FIXPT_SCALE, 0);
+		Mat newImage, newImage_fpt;
+		newImage = img;
+		newImage.convertTo(newImage_fpt, DataType<NEWSIFT_wt>::type, NEWSIFT_FIXPT_SCALE, 0);
 
 		float sig_diff;
 
@@ -202,15 +201,15 @@ namespace cv
 		{
 			sig_diff = sqrtf(std::max(sigma * sigma - NEWSIFT_INIT_SIGMA * NEWSIFT_INIT_SIGMA * 4, 0.01f));
 			Mat dbl;
-			resize(gray_fpt, dbl, Size(gray.cols * 2, gray.rows * 2), 0, 0, INTER_LINEAR);
+			resize(newImage_fpt, dbl, Size(newImage.cols * 2, newImage.rows * 2), 0, 0, INTER_LINEAR);
 			GaussianBlur(dbl, dbl, Size(), sig_diff, sig_diff);
 			return dbl;
 		}
 		else
 		{
 			sig_diff = sqrtf(std::max(sigma * sigma - NEWSIFT_INIT_SIGMA * NEWSIFT_INIT_SIGMA, 0.01f));
-			GaussianBlur(gray_fpt, gray_fpt, Size(), sig_diff, sig_diff);
-			return gray_fpt;
+			GaussianBlur(newImage_fpt, newImage_fpt, Size(), sig_diff, sig_diff);
+			return newImage_fpt;
 		}
 	}
 
@@ -580,6 +579,7 @@ namespace cv
 			float cbin = c_rot + d / 2 - 0.5f;
 			int r = pt.y + i, c = pt.x + j;
 
+			// Do work here. Change from grey to color
 			if (rbin > -1 && rbin < d && cbin > -1 && cbin < d &&
 				r > 0 && r < rows - 1 && c > 0 && c < cols - 1)
 			{
