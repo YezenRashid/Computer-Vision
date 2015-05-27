@@ -17,7 +17,7 @@ int main(int argc, char *argv[]) {
 	if (argc == 1) {
 		argv = new char*[11];
 		argv[0] = "../Debug/Program4.exe";
-		argv[1] = "./images/bark/";
+		argv[1] = "./images/ubc/";
 		argv[2] = "3";
 		argv[3] = "img1.ppm";
 		argv[4] = "img2.ppm";

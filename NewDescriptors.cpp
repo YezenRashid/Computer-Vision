@@ -50,8 +50,6 @@
 
 using namespace std;
 
-using namespace std;
-
 namespace cv
 {
 
@@ -171,29 +169,25 @@ namespace cv
 	//does everything other than converting an image to an opponent color space for the class.  Option 3 work would all be done here
 	void OpponentColorDescriptorExtractor::computeImpl(const Mat& bgrImage, vector<KeyPoint>& keypoints, Mat& descriptors) const
 	{
-		vector<Mat> opponentChannels; //unlikely to be color band vector
+		vector<Mat> opponentChannels; 
 		convertBGRImageToOpponentColorSpace(bgrImage, opponentChannels);
 
 		const int N = 3; // channels count
 		vector<KeyPoint> channelKeypoints[N];
 		Mat channelDescriptors[N];
+		//Mat channelDescriptors;
 		vector<int> idxs[N];
-
-		for (int ci = 0; ci < N; ci++) // loop for each channel
-		{
-			channelKeypoints[ci].insert(channelKeypoints[ci].begin(), keypoints.begin(), keypoints.end());
-		}
 
 		// Compute descriptors three times, once for each Opponent channel to concatenate into a single color descriptor
 		int maxKeypointsCount = 0;
 		for (int ci = 0; ci < N; ci++) // loop for each channel
 		{
+			channelKeypoints[ci].insert(channelKeypoints[ci].begin(), keypoints.begin(), keypoints.end());
 			// Use class_id member to get indices into initial keypoints vector
 			for (size_t ki = 0; ki < channelKeypoints[ci].size(); ki++) // loop through the size of a channel
 				channelKeypoints[ci][ki].class_id = (int)ki;
 
 			// below calls compute(const Mat& image, vector<KeyPoint>& keypoints, Mat& descriptors)
-			descriptorExtractor->compute(opponentChannels[ci], channelKeypoints[ci], channelDescriptors[ci]);
 			idxs[ci].resize(channelKeypoints[ci].size());
 			for (size_t ki = 0; ki < channelKeypoints[ci].size(); ki++)
 			{
@@ -203,9 +197,13 @@ namespace cv
 			maxKeypointsCount = std::max(maxKeypointsCount, (int)channelKeypoints[ci].size());
 		}
 
+		//for (int ci = 0; ci < N; ci++) // loop for each channel
+		//{
+		//	descriptorExtractor->compute(opponentChannels[ci], channelKeypoints[ci], channelDescriptors[ci]);
+		//}
+
 		vector<KeyPoint> outKeypoints;
-		outKeypoints.reserve(keypoints.
-			size());
+		outKeypoints.reserve(keypoints.size());
 
 		int dSize = descriptorExtractor->descriptorSize();
 		Mat mergedDescriptors(maxKeypointsCount, 3 * dSize, descriptorExtractor->descriptorType());
@@ -233,17 +231,19 @@ namespace cv
 			{
 				outKeypoints.push_back(keypoints[maxInitIdx]);
 				// merge descriptors
-				for (int ci = 0; ci < N; ci++)
+				for (int ci = 0; ci < 1; ci++)
 				{
 					Mat dst = mergedDescriptors(Range(mergedCount, mergedCount + 1), Range(ci*dSize, (ci + 1)*dSize));
-					channelDescriptors[ci].row(idxs[ci][cp[ci]]).copyTo(dst);
+					//channelDescriptors[ci].row(idxs[ci][cp[ci]]).copyTo(dst);
 					cp[ci]++;
 				}
 				mergedCount++;
 			}
 		}
+
 		mergedDescriptors.rowRange(0, mergedCount).copyTo(descriptors);
 		std::swap(outKeypoints, keypoints);
+		descriptorExtractor->compute(bgrImage, keypoints, descriptors);
 	}
 
 	void OpponentColorDescriptorExtractor::read(const FileNode& fn)
