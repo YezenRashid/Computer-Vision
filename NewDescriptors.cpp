@@ -243,7 +243,13 @@ namespace cv
 
 		mergedDescriptors.rowRange(0, mergedCount).copyTo(descriptors);
 		std::swap(outKeypoints, keypoints);
-		descriptorExtractor->compute(bgrImage, keypoints, descriptors);
+		//descriptorExtractor->compute(bgrImage, keypoints, descriptors);
+
+		// This uses the opponentChannels and also gets a result, but there are three opponent channels and only one descriptors Mat.
+		for (int ci = 0; ci < N; ci++) // loop for each channel
+		{
+			descriptorExtractor->compute(opponentChannels[ci], channelKeypoints[ci], descriptors);
+		}
 	}
 
 	void OpponentColorDescriptorExtractor::read(const FileNode& fn)
