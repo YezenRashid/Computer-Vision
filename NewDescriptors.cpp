@@ -52,6 +52,17 @@ using namespace std;
 
 namespace cv
 {
+	// default width of descriptor histogram array
+	static const int SIFT_DESCR_WIDTH = 4;
+
+	// default number of bins per histogram in descriptor array
+	static const int SIFT_DESCR_HIST_BINS = 8;
+
+	// threshold on magnitude of elements of descriptor vector
+	static const float SIFT_DESCR_MAG_THR = 0.2f;
+
+	// factor used to convert floating-point descriptor to unsigned char
+	static const float SIFT_INT_DESCR_FCTR = 512.f;
 
 	/****************************************************************************************\
 	*                                 DescriptorExtractor                                    *
@@ -234,27 +245,38 @@ namespace cv
 		mergedDescriptors.rowRange(0, mergedCount).copyTo(descriptors);
 		std::swap(outKeypoints, keypoints);
 
-		//// copy histogram to the descriptor,
-		//// apply hysteresis thresholding
-		//// and scale the result, so that it can be easily converted
-		//// to byte array
-		//float nrm2 = 0;
-		//len = d*d*n;
-		//for (k = 0; k < len; k++)
-		//	nrm2 += dst[k] * dst[k];
-		//float thr = std::sqrt(nrm2)*SIFT_DESCR_MAG_THR;
-		//for (i = 0, nrm2 = 0; i < k; i++)
-		//{
-		//	float val = std::min(dst[i], thr);
-		//	dst[i] = val;
-		//	nrm2 += val*val;
-		//}
-		//nrm2 = SIFT_INT_DESCR_FCTR / std::max(std::sqrt(nrm2), FLT_EPSILON);
+		// copy histogram to the descriptor,
+		// apply hysteresis thresholding
+		// and scale the result, so that it can be easily converted
+		// to byte array
+		float nrm2 = 0;
+		int d = 4;
+		int n = 8;
+		int len = d*d*n;
+		int k;
+		for (int r = 0; r < descriptors.rows; r++) {
+			float * dst = descriptors.ptr<float>(r);
 
-		//for (k = 0; k < len; k++)
-		//{
-		//	dst[k] = saturate_cast<uchar>(dst[k] * nrm2);
-		//}
+			for (int c = 0; c < descriptors.cols; c++) {
+				for (k = 0; k < len; k++)
+					nrm2 += dst[k] * dst[k];
+
+				float thr = std::sqrt(nrm2)*SIFT_DESCR_MAG_THR;
+
+				for (int i = 0, nrm2 = 0; i < k; i++)
+				{
+					float val = std::min(dst[i], thr);
+					dst[i] = val;
+					nrm2 += val*val;
+				}
+				nrm2 = SIFT_INT_DESCR_FCTR / std::max(std::sqrt(nrm2), FLT_EPSILON);
+
+				for (k = 0; k < len; k++)
+				{
+					dst[k] = saturate_cast<uchar>(dst[k] * nrm2);
+				}
+			}
+		}
 	}
 
 	void OpponentColorDescriptorExtractor::read(const FileNode& fn)

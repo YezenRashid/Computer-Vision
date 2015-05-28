@@ -1,8 +1,15 @@
-﻿Build started 5/27/2015 5:49:42 PM.
+﻿Build started 5/28/2015 3:29:56 PM.
      1>Project "C:\Users\Yezen\Documents\Visual Studio 2013\Projects\Program4\Program4\Program4.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /IC:\opencv\build\include /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt NewDescriptors.cpp
          NewDescriptors.cpp
+     1>c:\users\yezen\documents\visual studio 2013\projects\program4\program4\newdescriptors.cpp(270): warning C4244: '+=' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\yezen\documents\visual studio 2013\projects\program4\program4\newdescriptors.cpp(272): warning C4258: 'nrm2' : definition from the for loop is ignored; the definition from the enclosing scope is used
+                 c:\users\yezen\documents\visual studio 2013\projects\program4\program4\newdescriptors.cpp(266) : definition of 'nrm2' ignored
+                 c:\users\yezen\documents\visual studio 2013\projects\program4\program4\newdescriptors.cpp(252) : definition of 'nrm2' used
+     1>c:\users\yezen\documents\visual studio 2013\projects\program4\program4\newdescriptors.cpp(276): warning C4258: 'nrm2' : definition from the for loop is ignored; the definition from the enclosing scope is used
+                 c:\users\yezen\documents\visual studio 2013\projects\program4\program4\newdescriptors.cpp(266) : definition of 'nrm2' ignored
+                 c:\users\yezen\documents\visual studio 2013\projects\program4\program4\newdescriptors.cpp(252) : definition of 'nrm2' used
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Yezen\Documents\Visual Studio 2013\Projects\Program4\Debug\Program4.exe" /INCREMENTAL /NOLOGO /LIBPATH:C:\opencv\build\x86\vc12\lib opencv_core2410d.lib opencv_imgproc2410d.lib opencv_highgui2410d.lib opencv_ml2410d.lib opencv_video2410d.lib opencv_features2d2410d.lib opencv_calib3d2410d.lib opencv_objdetect2410d.lib opencv_contrib2410d.lib opencv_legacy2410d.lib opencv_flann2410d.lib opencv_nonfree2410d.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Yezen\Documents\Visual Studio 2013\Projects\Program4\Debug\Program4.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Yezen\Documents\Visual Studio 2013\Projects\Program4\Debug\Program4.lib" /MACHINE:X86 Debug\DescriptorUtil.obj
          Debug\main.obj
@@ -14,4 +21,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:00.87
+Time Elapsed 00:00:01.23
