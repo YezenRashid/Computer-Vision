@@ -69,6 +69,7 @@
     <ClInclude Include="DescriptorType.h" />
     <ClInclude Include="DescriptorUtil.h" />
     <ClInclude Include="NewDescriptorExtractor.h" />
+    <ClInclude Include="Newfeatures2d.hpp" />
     <ClInclude Include="ScriptData.h" />
   </ItemGroup>
   <ItemGroup>
@@ -76,6 +77,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NewDescriptorExtractor.cpp" />
     <ClCompile Include="NewDescriptors.cpp" />
+    <ClCompile Include="OriginalSift.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="runtestBark.bat" />
