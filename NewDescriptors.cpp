@@ -245,36 +245,39 @@ namespace cv
 		mergedDescriptors.rowRange(0, mergedCount).copyTo(descriptors);
 		std::swap(outKeypoints, keypoints);
 
+		normalize(descriptors);
+	}
+
+	void DescriptorExtractor::normalize(Mat& descriptors) const {
 		// copy histogram to the descriptor,
 		// apply hysteresis thresholding
 		// and scale the result, so that it can be easily converted
 		// to byte array
 		float nrm2 = 0;
-		int d = 4;
-		int n = 8;
+		int d = SIFT_DESCR_WIDTH;
+		int n = SIFT_DESCR_HIST_BINS;
 		int len = d*d*n;
 		int k;
-		for (int r = 0; r < descriptors.rows; r++) {
-			float * dst = descriptors.ptr<float>(r);
 
-			for (int c = 0; c < descriptors.cols; c++) {
-				for (k = 0; k < len; k++)
-					nrm2 += dst[k] * dst[k];
+		for (int row = 0; row < descriptors.rows; row++) {
+			float * dst = descriptors.ptr<float>(row);
 
-				float thr = std::sqrt(nrm2)*SIFT_DESCR_MAG_THR;
+			for (k = 0; k < len; k++)
+				nrm2 += dst[k] * dst[k];
 
-				for (int i = 0, nrm2 = 0; i < k; i++)
-				{
-					float val = std::min(dst[i], thr);
-					dst[i] = val;
-					nrm2 += val*val;
-				}
-				nrm2 = SIFT_INT_DESCR_FCTR / std::max(std::sqrt(nrm2), FLT_EPSILON);
+			float thr = std::sqrt(nrm2)*SIFT_DESCR_MAG_THR;
 
-				for (k = 0; k < len; k++)
-				{
-					dst[k] = saturate_cast<uchar>(dst[k] * nrm2);
-				}
+			for (int i = 0, nrm2 = 0; i < k; i++)
+			{
+				float val = std::min(dst[i], thr);
+				dst[i] = val;
+				nrm2 += val*val;
+			}
+			nrm2 = SIFT_INT_DESCR_FCTR / std::max(std::sqrt(nrm2), FLT_EPSILON);
+
+			for (k = 0; k < len; k++)
+			{
+				dst[k] = saturate_cast<uchar>(dst[k] * nrm2);
 			}
 		}
 	}

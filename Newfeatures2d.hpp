@@ -233,6 +233,7 @@ namespace cv
 
 	protected:
 		virtual void computeImpl(const Mat& image, vector<KeyPoint>& keypoints, Mat& descriptors) const = 0;
+		void normalize(Mat& descriptors) const;
 
 		/*
 		* Remove keypoints within borderPixels of an image edge.
