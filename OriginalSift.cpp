@@ -644,42 +644,6 @@ namespace cv
 				for (k = 0; k < n; k++)
 					dst[(i*d + j)*n + k] = hist[idx + k];
 			}
-
-//		// copy histogram to the descriptor,
-//		// apply hysteresis thresholding
-//		// and scale the result, so that it can be easily converted
-//		// to byte array
-//		float nrm2 = 0;
-//		len = d*d*n;
-//		for (k = 0; k < len; k++)
-//			nrm2 += dst[k] * dst[k];
-//		float thr = std::sqrt(nrm2)*SIFT_DESCR_MAG_THR;
-//		for (i = 0, nrm2 = 0; i < k; i++)
-//		{
-//			float val = std::min(dst[i], thr);
-//			dst[i] = val;
-//			nrm2 += val*val;
-//		}
-//		nrm2 = SIFT_INT_DESCR_FCTR / std::max(std::sqrt(nrm2), FLT_EPSILON);
-//
-//#if 1
-//		for (k = 0; k < len; k++)
-//		{
-//			dst[k] = saturate_cast<uchar>(dst[k] * nrm2);
-//		}
-//#else
-//		float nrm1 = 0;
-//		for (k = 0; k < len; k++)
-//		{
-//			dst[k] *= nrm2;
-//			nrm1 += dst[k];
-//		}
-//		nrm1 = 1.f / std::max(nrm1, FLT_EPSILON);
-//		for (k = 0; k < len; k++)
-//		{
-//			dst[k] = std::sqrt(dst[k] * nrm1);//saturate_cast<uchar>(std::sqrt(dst[k] * nrm1)*SIFT_INT_DESCR_FCTR);
-//		}
-//#endif
 	}
 
 	static void calcDescriptors(const vector<Mat>& gpyr, const vector<KeyPoint>& keypoints,
