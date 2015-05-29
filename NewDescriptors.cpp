@@ -245,9 +245,13 @@ namespace cv
 		mergedDescriptors.rowRange(0, mergedCount).copyTo(descriptors);
 		std::swap(outKeypoints, keypoints);
 
+		// Normalization is called after the stacking and merging is done 
+		// on the descriptors 
 		normalize(descriptors);
 	}
 
+	// Takes in a Mat of descriptors for an image and normalizes each descriptor or row
+	// of the passed Mat.
 	void DescriptorExtractor::normalize(Mat& descriptors) const {
 		// copy histogram to the descriptor,
 		// apply hysteresis thresholding
