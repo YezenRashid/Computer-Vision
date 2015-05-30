@@ -263,8 +263,10 @@ namespace cv
 		int len = d*d*n;
 		int k;
 
+		// Each row of the the Mat is considered one descriptor
+		// Every descriptor is normalized
 		for (int row = 0; row < descriptors.rows; row++) {
-			float * dst = descriptors.ptr<float>(row);
+			float *dst = descriptors.ptr<float>(row);
 
 			for (k = 0; k < len; k++)
 				nrm2 += dst[k] * dst[k];
