@@ -250,8 +250,12 @@ namespace cv
 		normalize(descriptors);
 	}
 
-	// Takes in a Mat of descriptors for an image and normalizes each descriptor or row
-	// of the passed Mat.
+	// normalize - Takes in a Mat of descriptors for an image and normalizes each 
+	// descriptor or row of the passed Mat. This uses the normalization code taken from
+	// DescriptorExtractor.cpp
+	// precondition: descriptors must exist.
+	// postconditions:  Applies the normalization on each descriptors row. and modifies
+	//					descriptors.
 	void DescriptorExtractor::normalize(Mat& descriptors) const {
 		// copy histogram to the descriptor,
 		// apply hysteresis thresholding
