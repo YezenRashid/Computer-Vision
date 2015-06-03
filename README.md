@@ -1,5 +1,4 @@
 # Computer-Vision
-Program 4
 
 The goal of this project was to modify the original SIFT code in opencv so that normalization is performed after stacking.
 The original SIFT code normalized each color band and then stacked them.  We aimed to first stack the color bands and then 
